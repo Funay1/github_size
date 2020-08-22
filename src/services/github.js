@@ -6,11 +6,11 @@ const api = axios.create({
 });
 
 function getInitialPage(userName) {
-  if (!userName) throw new 'Username is required';
+  if (!userName) throw new 'Username is required'();
   return api.get(`/${userName}${GET_REPO_QUERY_STRING}`);
 }
-function getPageContent(url){
-  if(!url) throw new 'Url is required';
+function getPageContent(url) {
+  if (!url) throw new 'Url is required'();
   return api.get(url);
 }
 

@@ -1,4 +1,8 @@
-const { REGEX_URL_REPO, REGEX_BLOB_FILES, REGEX_FOLDER } = require('../constants');
+const {
+  REGEX_URL_REPO,
+  REGEX_BLOB_FILES,
+  REGEX_FOLDER
+} = require('../constants');
 const stringUtils = require('./string');
 function getRepositoriesFromPage(userName, pageContent) {
   userName = stringUtils.uppercaseFirstLetter(userName);
@@ -21,7 +25,7 @@ function getFilesFromPage(username, pageContent) {
   }
   return result;
 }
-function getFoldersFromPage(username, pageContent){
+function getFoldersFromPage(username, pageContent) {
   const regex = new RegExp(REGEX_FOLDER, 'g');
   let regexResult;
   const result = [];
