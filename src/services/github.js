@@ -6,6 +6,7 @@ const api = axios.create({
 });
 function getPageContent(url, proxy = null) {
   if (!url) throw new 'Url is required'();
+  console.log(proxy);
   return api.get(url, { proxy });
 }
 

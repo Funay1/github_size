@@ -1,6 +1,9 @@
 const githubService = require('../services/github');
 const stringUtils = require('../utils/string');
-const { getLinesAndSizeFromFiles, searchAllFilesHTMLElementsOnRepository } = require('../utils/githubHelper');
+const {
+  getLinesAndSizeFromFiles,
+  searchAllFilesHTMLElementsOnRepository
+} = require('../utils/githubHelper');
 const redis = {};
 
 async function getLinesAndSizeFromGithubRepository(req, res) {
@@ -28,9 +31,9 @@ async function getLinesAndSizeFromGithubRepository(req, res) {
     const result = await getLinesAndSizeFromFiles(hrefFiles);
     // save on redis the result;
     redis[`${username}/${repository}`] = result;
-    res.status(200).send({ result });
+    return res.status(200).send({ result });
   } catch (e) {
-    console.log(e);
+    console.log('errinho', e);
     res.status(500).json({ message: 'Internal error', teste: e });
   }
 }
