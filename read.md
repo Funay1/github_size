@@ -1,5 +1,3 @@
-Primeiramente gostaria de agradecer por estar fazendo parte do processo seletivo.
-
 Utilizei uma lib de scrapping (cheerio) apenas para pegar a lista de proxy (somente para adianatar o desenvolvimento visto o tempo curto) mas é o unico momento em que tal lib é utilizada.
 
 Algumas considerações em relação ao código, para armazenar as requisições passadas para evitar um delay muito grande de repositórios já procurados a ideia era usar REDIS porém não consegui finalizar essa parte por conta do tempo mas deixei a ideia como um vetor salvo em memória. (ainda sim para ter uma ideia parecida, faltou o tempo de expiração do registro).
