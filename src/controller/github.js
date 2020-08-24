@@ -33,8 +33,9 @@ async function getLinesAndSizeFromGithubRepository(req, res) {
     redis[`${username}/${repository}`] = result;
     return res.status(200).send({ result });
   } catch (e) {
-    console.log('errinho', e);
-    res.status(500).json({ message: 'Internal error', teste: e });
+    if (e && e.message)
+      return res.status(500).json({ message: e.message });
+    res.status(500).json({ message: 'Internal error', e });
   }
 }
 module.exports = Object.freeze({
