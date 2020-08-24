@@ -1,21 +1,36 @@
 const githubService = require('../services/github');
-const githubHelper = require('../utils/githubHelper');
 const stringUtils = require('../utils/string');
+const { getLinesAndSizeFromFiles, searchAllFilesHTMLElementsOnRepository } = require('../utils/githubHelper');
+const redis = {};
+
 async function getLinesAndSizeFromGithubRepository(req, res) {
   try {
-    const { username } = req.query;
-    if (!username) res.status(400).send({ message: 'Missing repository' });
-    const { data } = await githubService.getInitialPage(username);
-    const repositories = githubHelper.getRepositoriesFromPage(username, data);
-    console.log(repositories);
-    const pagesContent = await Promise.all(
-      repositories.map((e) => githubService.getPageContent(e))
+    const proxy = res.locals.proxy;
+    const { repository, username } = req.query;
+    if (!repository || !username)
+      res.status(400).send({ message: 'Missing repository or username' });
+    // check if this repository has been searched before and return last result
+    if (redis[`${username}/${repository}`])
+      return res
+        .status(200)
+        .send({ message: redis[`${username}/${repository}`] });
+    // get a initial pageContent from repository
+    const pageContent = await githubService.getPageContent(
+      `${username}/${repository}`,
+      proxy
     );
-    // const files = githubHelper.getFilesFromPage(username, pagesContent[0].data);
-    // const folders = githubHelper.getFoldersFromPage(username, pagesContent[0].data);
-    // return res.status(200).send(folders.map(e=>stringUtils.getHref(e)));
-    res.status(200).send({ message: 'tudo certo por aqui' });
+    let filesHtmlElements = await searchAllFilesHTMLElementsOnRepository(
+      username,
+      pageContent.data,
+      proxy
+    );
+    const hrefFiles = filesHtmlElements.map((e) => stringUtils.getHref(e));
+    const result = await getLinesAndSizeFromFiles(hrefFiles);
+    // save on redis the result;
+    redis[`${username}/${repository}`] = result;
+    res.status(200).send({ result });
   } catch (e) {
+    console.log(e);
     res.status(500).json({ message: 'Internal error', teste: e });
   }
 }
